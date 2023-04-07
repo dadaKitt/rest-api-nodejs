@@ -5,6 +5,9 @@
 #### Installl
 
 ```
+  npm init
+```
+```
   npm i express mysql2 nodemon bcyrpt
 ```
 
