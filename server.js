@@ -1,31 +1,27 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
-const mysql2 = require('mysql2')
-const port = 3000
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-const connection = mysql2.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'restapi'
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.get('/users', (req, res) => {
+  res.json(users)
 })
-
-
-app.post('/users', async(req, res) => {
-    res.json(req.body)
+app.get('/users/:id', (req, res) => {
+  res.json(users.find(users => users.id === req.params.id))
 })
-
-connection.execute(
-    'SELECT * FROM users',
-    function(err, results, fields){
-        console.log(results)
-        console.log(fields)
-        return false
-    } 
-);
-
-app.listen(port, () => {
-  console.log(`Server run on port: ${port}`)
+app.post('/users', (req, res) => {
+  users.push(req.body)
+  res.status(201).json(req.body)
+})
+app.put('/users/:id', (req, res) => {
+  const updateIndex = users.findIndex(users => users.id === req.params.id)
+  res.json(Object.assign(users[updateIndex], req.body))
+})
+app.delete('/users/:id', (req, res) => {
+  const deleteIndex = users.findIndex(book => book.id === req.params.id)
+  users.splice(deleteIndex, 1)
+  res.status(204).send()
+})
+app.listen(3000, () => {
+  console.log('Start server at port 3000.')
 })
